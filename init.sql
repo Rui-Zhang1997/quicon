@@ -9,7 +9,7 @@ create table if not exists submissions (
     author varchar(200),
     upvotes integer,
     downvotes integer,
-    time timestamp,
+    timePosted timestamp,
     primary key (id)
 );
 
