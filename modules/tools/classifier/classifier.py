@@ -22,4 +22,13 @@ Method - Primitive:
 This kind of builds off of Max Candocia's work.
 '''
 
+from modules.models import models
+from modules.db import polydb as db
 
+def get_sources():
+    session = db.get_session()
+    return session.query(models.Submission.source).all()
+
+# https://www.<source>.com/<etc>
+def get_network(url):
+    return url.split('.')[1]
