@@ -1,0 +1,15 @@
+# scraper configuration
+conservative:
+    model: Conservative
+    limit: 200
+    - 'libertarian': false
+    - 'republican': false
+    - 'uncensorednews': false
+    - 'conservative': false
+liberal:
+    model: Liberal
+    limit: 200
+    - 'obama': false
+    - 'liberal': false
+    - 'enoughtrumpspam': false
+    - 'progressive': false
