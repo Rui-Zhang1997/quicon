@@ -51,26 +51,12 @@ def Ngram(text, N=1, M=None, min_occur=2):
         return dict([(k, v) for k, v in grams.items() if v >= min_occur])
     return grams
 '''
-Extract text using relative sizes
+Extract text using relative sizes.
 '''
 def extract_article_relative_size(text_groups):
-    group_sizes = dict([(tag, len(text_groups[tag])) for tag in text_groups])
-    keys = [tag for tag in text_groups]
-    paragraph_sizes = {}
-    for key in text_groups:
-        paragraph_sizes[key] = [len(s) for s in text_groups[key]]
-        paragraph_sizes[key] = mathcms.normalize(10, paragraph_sizes[key])
-    std_devs = dict([(tag, mathcms.variance(v)) for tag, v in paragraph_sizes.items()])
-    for k, v in std_devs.items():
-        std_devs[k] = (mathcms.truncate(v[0], 3), mathcms.truncate(v[1], 3))
-    difference = -1
-    text_tag = ''
-    for tag, (mean, variance) in std_devs.items():
-        if (abs(mean - variance) < difference) or (difference == -1):
-            difference = abs(mean - variance)
-            text_tag = tag
-    return text_tag, ' '.join(text_groups[text_tag])
-
+    words = {}
+    for k,v in text_groups.items():
+        words[k] = clean_up(' '.join(v))
 '''
 Extract text using N-gram frequencies
 '''
@@ -84,6 +70,7 @@ def extract_article_relative_phrases(estimated_article, text_groups):
     print("----------------------------------------------------")
     for k,v in text_grams.items():
         print(k,v)
+        print()
 
 def scrape_article(url):
     r = req.get(url)
@@ -100,7 +87,8 @@ def scrape_article(url):
         if parent_id not in text_groups:
             text_groups[parent_id] = []
         text_groups[parent_id].append(t.text.strip())
-    return extract_article_relative_phrases(extract_article_relative_size(text_groups)[1], text_groups)
+    extract_article_relative_size(text_groups)
+    # return extract_article_relative_phrases(extract_article_relative_size(text_groups)[1], text_groups)
 
 def get_sources_from_table(Table, strip_www=True):
     session = pd.get_session()

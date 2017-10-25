@@ -16,4 +16,4 @@ def scrape():
 def tscrape(url):
     print(tsc.scrape_article(url))
 
-tscrape('https://www.washingtonpost.com/news/post-politics/wp/2017/10/25/trump-punches-back-at-flake-and-corker-claims-a-love-fest-of-support-in-senate/?hpid=hp_hp-top-table-main_pp-trump-837am%3Ahomepage%2Fstory&utm_term=.9f192f693848https://www.washingtonpost.com/news/post-politics/wp/2017/10/25/trump-punches-back-at-flake-and-corker-claims-a-love-fest-of-support-in-senate/?hpid=hp_hp-top-table-main_pp-trump-837am%3Ahomepage%2Fstory&utm_term=.9f192f693848')
+tscrape('https://www.nytimes.com/2017/10/24/us/puerto-rico-schools.html?rref=collection%2Fsectioncollection%2Fus&action=click&contentCollection=us&region=rank&module=package&version=highlights&contentPlacement=1&pgtype=sectionfront')
