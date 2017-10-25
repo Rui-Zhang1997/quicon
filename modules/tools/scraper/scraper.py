@@ -28,21 +28,16 @@ reddit = praw.Reddit(client_id=config['client_id'],
                      user_agent=config['user_agent'],
                      username=config['username'])
 
-subreddits = [
-    'worldnews',
-    'news',
-    'neutralnews',
-    'worldpolitics',
-    'worldevents',
-    'uspolitics',
-    'liberal',
-    'conservative',
-    'the_donald'
+lib_subreddits = [
+    'enoughtrumpspam'
+]
 
+cons_subreddits = [
+    'uncensorednews'
 ]
 
 def scrape_subreddits(sr):
-    return reddit.subreddit(sr).hot(limit=25)
+    return reddit.subreddit(sr).hot(limit=200)
 
 def insert_to_table(table, objs, update_keys):
     session = pd.get_session()
@@ -72,7 +67,7 @@ def scrape_all_comments(cfs):
                 comments.append(cmt)
         insert_to_table('comments', comments, {'content': 'content'})
 
-def scrape_all_posts(submissions):
+def scrape_all_posts(submissions, Model):
     posts = []
     cfs = []
     for submission in submissions:
@@ -84,14 +79,14 @@ def scrape_all_posts(submissions):
         timePosted = submission.created
         subreddit = submission.subreddit.display_name
         source = submission.url
-        scrape_all_comments([submission.comments])
-        sub = models.Submission(_id, subreddit, title, author, source, upvotes, timePosted)
+        # scrape_all_comments([submission.comments])
+        sub = Model(_id, subreddit, title, author, source, upvotes, submission.upvote_ratio, timePosted)
         posts.append(sub)
-    insert_to_table('submissions', posts, {'title': 'title'})
+    insert_to_table(posts[0].__tablename__, posts, {'title': 'title'})
 
-def run_scraper():
+def run_scraper(subreddits, Model):
     for sr in subreddits:
         stime = int(time.time() * 1000)
         print("Running scrape on subreddit: %s" % sr)
-        scrape_all_posts(scrape_subreddits(sr))
+        scrape_all_posts(scrape_subreddits(sr), Model)
         print("Finished scraping subreddit: %s. Completed in %d ms." % (sr, int(time.time() * 1000) - stime))

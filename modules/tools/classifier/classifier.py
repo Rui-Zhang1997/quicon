@@ -22,13 +22,23 @@ Method - Primitive:
 This kind of builds off of Max Candocia's work.
 '''
 
+'''
+Gets sources and classifies them as conservative, liberal, or moderate.
+Takes the sources from the database and sorts them in three groups:
+Strictly Conservative: Only used in conservative subreddits
+Strictly Liberal: Only used in liberal subreddits
+Moderate: Appears in both subreddits
+
+
+'''
+from modules.tools.math import commons as cms
 from modules.models import models
-from modules.db import polydb as db
+from modules.tools.scraper import text_scraper as tsc
 
-def get_sources():
-    session = db.get_session()
-    return session.query(models.Submission.source).all()
+def enforce_threshhold(d, t):
+    return dict([(k, d[k]) for k in list(filter(lambda k: d[k] > t, d))])
 
-# https://www.<source>.com/<etc>
-def get_network(url):
-    return url.split('.')[1]
+def get_stats_sources():
+    cons_sources, lib_sources = tsc.get_sources_from_table(models.Conservative), tsc.get_sources_from_table(models.Liberal)
+    cons_freq, lib_freq = enforce_threshhold(cms.collect(list(cons_sources)), 2), enforce_threshhold(cms.collect(list(lib_sources)), 2)
+    return cons_freq, lib_freq

@@ -11,22 +11,76 @@ class Submission(Base):
     title = Column(String(1000))
     author = Column(String(200))
     upvotes = Column(Integer)
+    upvote_ratio = Column(Float)
     timePosted = Column(Float)
     source = Column(String(225))
-    def __init__(self, _id, subreddit='', title='', author='', source='', upvotes=0, timePosted=0):
+    def __init__(self, _id, subreddit='', title='', author='', source='', upvotes=0, upvote_ratio=0, timePosted=0):
         self.id = _id
         self.subreddit = subreddit
         self.author = author
         self.upvotes = upvotes
+        self.upvote_ratio = upvote_ratio
         self.title = title
         self.timePosted = timePosted
         self.source = source
 
     def keys(self):
-        return ['id', 'subreddit', 'title', 'author', 'upvotes', 'timePosted', 'source']
+        return ['id', 'subreddit', 'title', 'author', 'upvotes', 'upvote_ratio', 'timePosted', 'source']
 
     def values(self):
-        return [self.id, self.subreddit, self.title, self.author, self.upvotes, self.timePosted, self.source]
+        return [self.id, self.subreddit, self.title, self.author, self.upvotes, self.upvote_ratio, self.timePosted, self.source]
+
+class Conservative(Base):
+    __tablename__ = 'conservative_submissions'
+    id = Column(String(10), primary_key=True)
+    subreddit = Column(String(200))
+    title = Column(String(1000))
+    author = Column(String(200))
+    upvotes = Column(Integer)
+    upvote_ratio = Column(Float)
+    timePosted = Column(Float)
+    source = Column(String(225))
+    def __init__(self, _id, subreddit='', title='', author='', source='', upvotes=0, upvote_ratio=0, timePosted=0):
+        self.id = _id
+        self.subreddit = subreddit
+        self.author = author
+        self.upvotes = upvotes
+        self.upvote_ratio = upvote_ratio
+        self.title = title
+        self.timePosted = timePosted
+        self.source = source
+
+    def keys(self):
+        return ['id', 'subreddit', 'title', 'author', 'upvotes', 'upvote_ratio', 'timePosted', 'source']
+
+    def values(self):
+        return [self.id, self.subreddit, self.title, self.author, self.upvotes, self.upvote_ratio, self.timePosted, self.source]
+
+class Liberal(Base):
+    __tablename__ = 'liberal_submissions'
+    id = Column(String(10), primary_key=True)
+    subreddit = Column(String(200))
+    title = Column(String(1000))
+    author = Column(String(200))
+    upvotes = Column(Integer)
+    upvote_ratio = Column(Float)
+    timePosted = Column(Float)
+    source = Column(String(225))
+    def __init__(self, _id, subreddit='', title='', author='', source='', upvotes=0, upvote_ratio=0, timePosted=0):
+        self.id = _id
+        self.subreddit = subreddit
+        self.author = author
+        self.upvotes = upvotes
+        self.upvote_ratio = upvote_ratio
+        self.title = title
+        self.timePosted = timePosted
+        self.source = source
+
+    def keys(self):
+        return ['id', 'subreddit', 'title', 'author', 'upvotes', 'upvote_ratio', 'timePosted', 'source']
+
+    def values(self):
+        return [self.id, self.subreddit, self.title, self.author, self.upvotes, self.upvote_ratio, self.timePosted, self.source]
 
 class Comment(Base):
     __tablename__ = 'comments'

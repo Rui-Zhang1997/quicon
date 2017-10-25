@@ -1,8 +1,17 @@
-from modules.tools.classifier import classifier
-from modules.tools.scraper import text_scraper as tsc
-from modules.db import polydb as db
+from modules.tools.classifier import classifier as cls
+from modules.db import polydb as pdb
+from modules.tools.scraper import scraper as ssc
+from modules.models import models
 
-db.init()
+pdb.init()
+def stat():
+    c, l = cls.get_stats_sources()
+    print(c, len(c))
+    print()
+    print(l, len(l))
 
-ps = tsc.extract_article('http://www.cbc.ca/news/canada/montreal/bill-62-stephanie-vallee-muslim-niqab-1.4356263')
-print(ps)
+def scrape():
+    ssc.run_scraper(ssc.lib_subreddits, models.Liberal)
+    ssc.run_scraper(ssc.cons_subreddits, models.Conservative)
+
+stat()

@@ -5,6 +5,25 @@ Attempts to pull the article from news sites.
 from bs4 import BeautifulSoup as bsoup
 import requests as req
 from modules.tools.math import commons as mathcms
+from modules.db import polydb as pd
+from nltk.corpus import stopwords
+import re
+
+STOPS = stopwords.words('english')
+
+def clean_up(text):
+    return [re.sub('[^a-zA-Z]', ' ', w).lower().strip() for w in re.split('\s+', text) if re.sub('[^a-zA-Z0-9]', ' ', w).lower().strip() not in STOPS]
+
+def bag_words(text, sort_max=True):
+    words = clean_up(text)
+    bow = {}
+    for word in words:
+        if word == '':
+            continue
+        bow[word] = bow[word] + 1 if word in bow else 1
+    if sort_max:
+        bow = sorted([(k, v) for k, v in bow.items()], key=lambda n: n[1])
+    return bow
 
 '''
 Attempts to grab the proper section.
@@ -24,10 +43,13 @@ def find_text(text_groups):
     std_devs = dict([(tag, mathcms.stddev(v)) for tag, v in paragraph_sizes.items()])
     for k, v in std_devs.items():
         std_devs[k] = (mathcms.truncate(v[0], 3), mathcms.truncate(v[1], 3))
-    print(paragraph_sizes)
-    print()
-    print(std_devs)
-    pass
+    difference = -1
+    text_tag = ''
+    for tag, (mean, variance) in std_devs.items():
+        if (abs(mean - variance) < difference) or (difference == -1):
+            difference = abs(mean - variance)
+            text_tag = tag
+    return ' '.join(text_groups[text_tag])
 
 def extract_article(url):
     r = req.get(url)
@@ -45,3 +67,13 @@ def extract_article(url):
             text_groups[parent_id] = []
         text_groups[parent_id].append(t.text.strip())
     return find_text(text_groups)
+
+def get_sources_from_table(Table, strip_www=True):
+    session = pd.get_session()
+    sources = []
+    for source in session.query(Table.source):
+        src = re.split('/+', source[0])[1]
+        if strip_www:
+            src = src.replace('www.', '')
+        sources.append(src)
+    return sources
