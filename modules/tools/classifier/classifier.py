@@ -34,6 +34,8 @@ Moderate: Appears in both subreddits
 from modules.tools.math import commons as cms
 from modules.models import models
 from modules.tools.scraper import text_scraper as tsc
+from modules.tools.math import commons as cms
+import math
 
 def enforce_threshhold(d, t):
     return dict([(k, d[k]) for k in list(filter(lambda k: d[k] > t, d))])
@@ -42,3 +44,22 @@ def get_stats_sources():
     cons_sources, lib_sources = tsc.get_sources_from_table(models.Conservative), tsc.get_sources_from_table(models.Liberal)
     cons_freq, lib_freq = enforce_threshhold(cms.collect(list(cons_sources)), 2), enforce_threshhold(cms.collect(list(lib_sources)), 2)
     return cons_freq, lib_freq
+
+def normalize_data(freqs):
+    mean, variance = cms.variance([freqs[k] for k in freqs])
+    stddev = math.sqrt(variance)
+    for k,v in freqs.items():
+        freqs[k] = (v-mean)/stddev
+
+'''
+Z-scores of the data. Can now make assumptions.
+TODO: Factor in temporal ratings data (though there
+is the chance that upvote ratio will not be significantly
+affected by time)
+'''
+def normalize_for_groups(cons_freq, lib_freq):
+    cons_keyset = set(cons_freq)
+    libs_keyset = set(lib_freq)
+    common_keys = cons_keyset & libs_keyset
+    common_freqs = dict([(k, cons_freq[k] - libs_freq[k]) for k in common_keys])
+    return normalize_data(cons_freq), normalize_data(lib_freq), normalize_data(common_freqs)

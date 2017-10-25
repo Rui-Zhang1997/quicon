@@ -11,10 +11,19 @@ import re
 
 STOPS = stopwords.words('english')
 
+'''
+@param text must be aray of words
+'''
 def clean_up(text):
-    return [re.sub('[^a-zA-Z]', ' ', w).lower().strip() for w in re.split('\s+', text) if re.sub('[^a-zA-Z0-9]', ' ', w).lower().strip() not in STOPS]
+    text_list = text if isinstance(text, list) else re.split('\s+', text)
+    return [re.sub('[^a-zA-Z]', ' ', w).lower().strip() for w in text_list
+            if re.sub('[^a-zA-Z0-9]', ' ', w).lower().strip() not in STOPS]
 
+'''
+@param text must be aray of words
+'''
 def bag_words(text, sort_max=True):
+    print("TEXT", text)
     words = clean_up(text)
     bow = {}
     for word in words:
@@ -26,21 +35,32 @@ def bag_words(text, sort_max=True):
     return bow
 
 '''
-Attempts to grab the proper section.
-Must take into account:
-    1. Number of paragraph tags in div
-    2. Length of each paragraph tag (how many words)
-    3. Total number of words contained in the tag
-    4. Phrase Frequency
+Returns common phrases.
+@param text must be an array of words
 '''
-def find_text(text_groups):
+def Ngram(text, N=1, M=None, min_occur=2):
+    if M == None:
+        M = N
+    text = clean_up(text)
+    grams = {}
+    for i in range(N, M+1):
+        for j in range(len(text)-i+1):
+            phrase = ' '.join(text[j:j+i])
+            grams[phrase] = grams[phrase] + 1 if phrase in grams else 1
+    if min_occur > 0:
+        return dict([(k, v) for k, v in grams.items() if v >= min_occur])
+    return grams
+'''
+Extract text using relative sizes
+'''
+def extract_article_relative_size(text_groups):
     group_sizes = dict([(tag, len(text_groups[tag])) for tag in text_groups])
     keys = [tag for tag in text_groups]
     paragraph_sizes = {}
     for key in text_groups:
         paragraph_sizes[key] = [len(s) for s in text_groups[key]]
         paragraph_sizes[key] = mathcms.normalize(10, paragraph_sizes[key])
-    std_devs = dict([(tag, mathcms.stddev(v)) for tag, v in paragraph_sizes.items()])
+    std_devs = dict([(tag, mathcms.variance(v)) for tag, v in paragraph_sizes.items()])
     for k, v in std_devs.items():
         std_devs[k] = (mathcms.truncate(v[0], 3), mathcms.truncate(v[1], 3))
     difference = -1
@@ -49,9 +69,23 @@ def find_text(text_groups):
         if (abs(mean - variance) < difference) or (difference == -1):
             difference = abs(mean - variance)
             text_tag = tag
-    return ' '.join(text_groups[text_tag])
+    return text_tag, ' '.join(text_groups[text_tag])
 
-def extract_article(url):
+'''
+Extract text using N-gram frequencies
+'''
+def extract_article_relative_phrases(estimated_article, text_groups):
+    est_gram = Ngram(estimated_article, 1, 5)
+    text_grams = {}
+    for key, text in text_groups.items():
+        print("KEY", key)
+        text_grams[key] = Ngram(' '.join(text).split(' '), 1, 5)
+    print("ESTIMATED", est_gram)
+    print("----------------------------------------------------")
+    for k,v in text_grams.items():
+        print(k,v)
+
+def scrape_article(url):
     r = req.get(url)
     soup = bsoup(r.text, 'html.parser')
     texts = soup.find_all('p')
@@ -66,7 +100,7 @@ def extract_article(url):
         if parent_id not in text_groups:
             text_groups[parent_id] = []
         text_groups[parent_id].append(t.text.strip())
-    return find_text(text_groups)
+    return extract_article_relative_phrases(extract_article_relative_size(text_groups)[1], text_groups)
 
 def get_sources_from_table(Table, strip_www=True):
     session = pd.get_session()
