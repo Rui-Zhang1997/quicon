@@ -7,6 +7,7 @@ import requests as req
 from modules.tools.math import commons as mathcms
 from modules.db import polydb as pd
 from nltk.corpus import stopwords
+from numpy import std, mean
 import re
 
 STOPS = stopwords.words('english')
@@ -15,10 +16,18 @@ STOPS = stopwords.words('english')
 @param text must be aray of words
 '''
 def clean_up(text):
-    text_list = text if isinstance(text, list) else re.split('\s+', text)
-    return [re.sub('[^a-zA-Z]', ' ', w).lower().strip() for w in text_list
-            if re.sub('[^a-zA-Z0-9]', ' ', w).lower().strip() not in STOPS]
+    text_list = text if isinstance(text, list) else re.split('\s+', text) # splits sentences up by whitespace
+    text_list = re.split('\s+', re.sub('[^a-zA-Z0-9]', ' ', ' '.join(text_list))) # 
+    return [w.lower() for w in text_list if w != '' and w.lower() not in STOPS]
 
+def sanitize(text_groups):
+    sanitized = {}
+    for k,v in text_groups.items():
+        sanitized[k] = [re.sub('[^a-zA-Z0-9]', ' ', p).lower().strip() for p in v] # all nonealphanumeric characters are replaced with space
+        sanitized[k] = [p for p in sanitized[k] if p != ''] # only keep paragraphs that have content
+    sanitized = dict([(k,v) for k,v in sanitized.items() if len(v) > 0])
+    print(sanitized)
+    return sanitized
 '''
 @param text must be aray of words
 '''
@@ -37,40 +46,48 @@ def bag_words(text, sort_max=True):
 '''
 Returns common phrases.
 @param text must be an array of words
+@param N smallest phrase length
+@param M largest phrase length
+@min_occur only report phrases that occur at least min_occur times
 '''
-def Ngram(text, N=1, M=None, min_occur=2):
+def Ngram(list_text, N=1, M=None, min_occur=2):
     if M == None:
         M = N
-    text = clean_up(text)
     grams = {}
     for i in range(N, M+1):
-        for j in range(len(text)-i+1):
-            phrase = ' '.join(text[j:j+i])
+        for j in range(len(list_text)-i+1):
+            phrase = ' '.join(list_text[j:j+i])
             grams[phrase] = grams[phrase] + 1 if phrase in grams else 1
     if min_occur > 0:
         return dict([(k, v) for k, v in grams.items() if v >= min_occur])
     return grams
+
 '''
-Extract text using relative sizes.
+Gets the frequency of words and phrases between paragraphs (Hypothesis: Paragraphs in an article should have more words in common
+                                                            with higher counts. T-tests of word frequencies should also indicate
+                                                            whether the paragraphs are related, and article paragraphs should.)
 '''
-def extract_article_relative_size(text_groups):
-    words = {}
-    for k,v in text_groups.items():
-        words[k] = clean_up(' '.join(v))
+def get_freqs(text_group):
+    pass
 '''
-Extract text using N-gram frequencies
+Gets the mean and standard deviation of kv-pair (Hypothesis: The lenghts of paragraphs in an article should
+                                                 be relatively uniform, with a higher average word count and low standard deviation)
 '''
-def extract_article_relative_phrases(estimated_article, text_groups):
-    est_gram = Ngram(estimated_article, 1, 5)
-    text_grams = {}
-    for key, text in text_groups.items():
-        print("KEY", key)
-        text_grams[key] = Ngram(' '.join(text).split(' '), 1, 5)
-    print("ESTIMATED", est_gram)
-    print("----------------------------------------------------")
-    for k,v in text_grams.items():
-        print(k,v)
-        print()
+def get_stddev(text_groups):
+    pass
+
+'''
+Counts the total number of words in kv-pair (Hypothesis: Articles usually contain more words than ads and redirects)
+'''
+def get_lengths(text_groups):
+    pass
+'''
+Uses above four functions to guess what piece of text is the actual article. text_groups should ONLY contain values that are
+an array of paragraphs, each cleaned for unwanted characters (replaced with spaces), all words shrunk to lowercase, and removed
+paragraphs of length 0
+'''
+def guess_article(text_groups):
+    pass
 
 def scrape_article(url):
     r = req.get(url)
@@ -87,8 +104,7 @@ def scrape_article(url):
         if parent_id not in text_groups:
             text_groups[parent_id] = []
         text_groups[parent_id].append(t.text.strip())
-    extract_article_relative_size(text_groups)
-    # return extract_article_relative_phrases(extract_article_relative_size(text_groups)[1], text_groups)
+    return guess_article(sanitize(text_groups))
 
 def get_sources_from_table(Table, strip_www=True):
     session = pd.get_session()
