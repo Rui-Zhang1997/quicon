@@ -26,13 +26,11 @@ def sanitize(text_groups):
         sanitized[k] = [re.sub('[^a-zA-Z0-9]', ' ', p).lower().strip() for p in v] # all nonealphanumeric characters are replaced with space
         sanitized[k] = [p for p in sanitized[k] if p != ''] # only keep paragraphs that have content
     sanitized = dict([(k,v) for k,v in sanitized.items() if len(v) > 0])
-    print(sanitized)
     return sanitized
 '''
 @param text must be aray of words
 '''
 def bag_words(text, sort_max=True):
-    print("TEXT", text)
     words = clean_up(text)
     bow = {}
     for word in words:
@@ -67,27 +65,43 @@ Gets the frequency of words and phrases between paragraphs (Hypothesis: Paragrap
                                                             with higher counts. T-tests of word frequencies should also indicate
                                                             whether the paragraphs are related, and article paragraphs should.)
 '''
-def get_freqs(text_group):
-    pass
+def get_freqs(text_groups):
+    freqs = {}
+    for k, v in text_groups.items():
+        freq = {}
+        freqs[k] = Ngram(re.split('\s+', ' '.join(v)), 1, 5)
+    return freqs
+
 '''
-Gets the mean and standard deviation of kv-pair (Hypothesis: The lenghts of paragraphs in an article should
+Gets the mean and standard deviation of kv-pair (Hypothesis: The lengths of paragraphs in an article should
                                                  be relatively uniform, with a higher average word count and low standard deviation)
 '''
 def get_stddev(text_groups):
-    pass
+    text_stddevs = {}
+    for k, v in text_groups.items():
+        sizes = [len(p) for p in v]
+        text_stddevs[k] = (mean(sizes), std(sizes))
+    return text_stddevs
 
 '''
 Counts the total number of words in kv-pair (Hypothesis: Articles usually contain more words than ads and redirects)
 '''
 def get_lengths(text_groups):
-    pass
+    text_lengths = {}
+    for k, v in text_groups.items():
+        text_lengths[k] = len(re.split('\s+', ' '.join(v)))
+    return text_lengths
+
 '''
 Uses above four functions to guess what piece of text is the actual article. text_groups should ONLY contain values that are
 an array of paragraphs, each cleaned for unwanted characters (replaced with spaces), all words shrunk to lowercase, and removed
 paragraphs of length 0
 '''
 def guess_article(text_groups):
-    pass
+    print("FREQUENCIES", get_freqs(text_groups))
+    print("STDDEV", get_stddev(text_groups))
+    print("LENGTHS", get_lengths(text_groups))
+    return None
 
 def scrape_article(url):
     r = req.get(url)
