@@ -8,7 +8,7 @@ def reduce(fn, lst, acc=None):
         acc = fn(acc, l)
     return acc
 
-def stddev(data):
+def variance(data):
     N = len(data)
     mean = sum(data)/N
     return mean, (sum([((mean-n) ** 2) for n in data]))/N
