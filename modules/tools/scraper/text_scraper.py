@@ -98,10 +98,33 @@ an array of paragraphs, each cleaned for unwanted characters (replaced with spac
 paragraphs of length 0
 '''
 def guess_article(text_groups):
-    print("FREQUENCIES", get_freqs(text_groups))
-    print("STDDEV", get_stddev(text_groups))
-    print("LENGTHS", get_lengths(text_groups))
-    return None
+    freqs, stddev, lengths = get_freqs(text_groups), get_stddev(text_groups), get_lengths(text_groups)
+    stddev_list = [(k, (m, s)) for k, (m, s) in stddev.items()]
+    top_means = dict(list(reversed(sorted(stddev_list, key=lambda n: n[1][0])))[:3])
+    top_devs = dict(list(reversed(sorted(stddev_list, key=lambda n: n[1][1])))[:3])
+    top_lengths = dict(list(reversed(sorted([(k, l) for k, l in lengths.items()], key=lambda n: n[1])))[:3])
+    common_keys = set(top_means) & set(top_devs) & set(top_lengths)
+    if len(common_keys) > 0:
+        if len(common_keys) == 1:
+            div = list(common_keys)[0]
+            return div, text_groups[div]
+        else: # returns the text with the longest text
+            keys = list(common_keys)
+            key = None
+            max_ = 0
+            for k in keys:
+                if top_lengths[k] > max_:
+                    max_ = top_lengths[k]
+                    key = k
+            return key, text_groups[key]
+    keys = list(top_lengths)
+    key = None
+    max_ = 0
+    for k in keys:
+        if top_lengths[k] > max_:
+            max_ = top_lengths[k]
+            key = k
+    return key, text_groups[key]
 
 def scrape_article(url):
     r = req.get(url)

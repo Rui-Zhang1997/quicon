@@ -16,4 +16,4 @@ def scrape():
 def tscrape(url):
     print(tsc.scrape_article(url))
 
-tscrape('https://www.nytimes.com/2017/10/24/us/puerto-rico-schools.html?rref=collection%2Fsectioncollection%2Fus&action=click&contentCollection=us&region=rank&module=package&version=highlights&contentPlacement=1&pgtype=sectionfront')
+tscrape('http://www.reuters.com/article/us-usa-trump-russia-charges/first-charges-filed-in-u-s-special-counsels-russia-investigation-source-idUSKBN1CX00V')
