@@ -104,7 +104,6 @@ def guess_article(text_groups):
     top_devs = dict(list(reversed(sorted(stddev_list, key=lambda n: n[1][1])))[:3])
     top_lengths = dict(list(reversed(sorted([(k, l) for k, l in lengths.items()], key=lambda n: n[1])))[:3])
     common_keys = set(top_means) & set(top_devs) & set(top_lengths)
-    print("COMMON_KEYS", common_keys)
     if len(common_keys) > 0:
         if len(common_keys) == 1:
             div = list(common_keys)[0]
@@ -131,7 +130,6 @@ def guess_article(text_groups):
     return key, text_groups[key]
 
 def scrape_article(url):
-    print(url)
     r = req.get(url, headers={'User-Agent': 'Polydata'})
     soup = bsoup(r.text, 'html.parser')
     texts = soup.find_all('p')
