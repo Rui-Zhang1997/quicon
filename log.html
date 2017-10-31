@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+    <title>424 Failed Dependency</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+    <style>
+        body {
+            background-color: #f1f4f5;
+            color: #37474f;
+            line-height: 1.4;
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            }
+        .error_code {
+            display: block;
+            font-size: 92px;
+            font-weight: 700;
+            margin-top: -25px;
+            }
+        .error_brief {
+            display: block;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            }
+        .help_button, .fix_button {
+            background-color: #399bff;
+            color: #fff;
+            margin-top: 15px;
+            font-size: 14px;
+            padding: 7px 20px 7px 20px;
+            border: none;
+            border-radius: 3px;
+            vertical-align: middle;
+            cursor: pointer;
+            }
+        .fix_button {
+            background-color: #38ad41;
+            }
+        #fix_details {
+            margin-top: 40px;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0.3s, opacity 0.3s linear;
+            }
+    </style>
+
+    <script language="JavaScript">
+        function toggleHelp() {
+            var e = document.getElementById("fix_details");
+            if (e.style.visibility == 'visible') {
+                e.style.visibility = 'hidden';
+                e.style.opacity = 0;
+            } else {
+                e.style.visibility = 'visible';
+                e.style.opacity = 1;
+            }
+        }
+    </script>
+</head>
+<body>
+
+<div style="display: table; position: absolute; height: 100%; width: 100%;">
+    <div style="display: table-cell; vertical-align: middle; padding: 0 40px;">
+        <div style="margin-left: auto; margin-right: auto; width: 520px;">
+            <div style="float:left; width:200px; text-align: center; padding-right: 20px;">
+                <span class="error_code">424</span>
+                <span class="error_description">Failed Dependency</span>
+            </div>
+            <div style="float:left; width:300px;">
+                <span class="error_brief">ÐÐ°Ð±Ð»Ð¾ÐºÐ¸ÑÐ¾Ð²Ð°Ð½Ð¾ Ð¿ÑÐ°Ð²Ð¸Ð»Ð°Ð¼Ð¸ Ð±ÐµÐ·Ð¾Ð¿Ð°ÑÐ½Ð¾ÑÑÐ¸</span>
+                <span class="error_detail">ÐÐ°Ð¿ÑÐ¾Ñ ÑÐ¾Ð´ÐµÑÐ¶Ð¸Ñ Ð¿ÑÐ¸Ð·Ð½Ð°ÐºÐ¸ Ð¿Ð¾Ð¿ÑÑÐºÐ¸ Ð¸ÑÐ¿Ð¾Ð»ÑÐ·Ð¾Ð²Ð°Ð½Ð¸Ñ ÑÑÐ·Ð²Ð¸Ð¼Ð¾ÑÑÐ¸ Ð½Ð° ÑÐ°Ð¹ÑÐµ</span>
+                <br>
+                <input type="button" value="ÐÐ°Ðº ÑÑÐ¾ Ð¸ÑÐ¿ÑÐ°Ð²Ð¸ÑÑ?" class="help_button" onclick="toggleHelp()">
+            </div>
+            <div style="clear:both"></div>
+            <div id="fix_details">
+                ÐÑÐ»Ð¸ ÐÑ Ð°Ð´Ð¼Ð¸Ð½Ð¸ÑÑÑÐ°ÑÐ¾Ñ ÑÐ°Ð¹ÑÐ°, ÑÐ°Ð¼ÑÐ¹ Ð±ÑÑÑÑÑÐ¹ ÑÐ¿Ð¾ÑÐ¾Ð± Ð¸ÑÐ¿ÑÐ°Ð²Ð¸ÑÑ ÑÑÑ Ð¾ÑÐ¸Ð±ÐºÑ &mdash; Ð²Ð¾ÑÐ¿Ð¾Ð»ÑÐ·Ð¾Ð²Ð°ÑÑÑÑ
+                Ð¢ÐµÑÐ½Ð¸ÑÐµÑÐºÐ¾Ð¹ Ð¿ÑÐ¾Ð²ÐµÑÐºÐ¾Ð¹ ÑÐ°Ð¹ÑÐ° Ð² Ð¿Ð°Ð½ÐµÐ»Ð¸ ÑÐ¿ÑÐ°Ð²Ð»ÐµÐ½Ð¸Ñ ÑÐ¾ÑÑÐ¸Ð½Ð³Ð¾Ð¼.
+                
+                <br>
+                <input type="button" value="Ð¢ÐµÑÐ½Ð¸ÑÐµÑÐºÐ°Ñ Ð¿ÑÐ¾Ð²ÐµÑÐºÐ° ÑÐ°Ð¹ÑÐ°" class="fix_button" onclick="location.href = 'https://adm.tools/troubleshooting/?host=frontnews.eu&error=424&request=WffA3U4uTC0ACDLa9kYAAAD9&time=2017-10-31%2002:16:29'">
+                <br><br>
+                <a href="https://www.ukraine.com.ua/faq/error-424.html">ÐÐ¾Ð´ÑÐ¾Ð±Ð½ÐµÐµ Ð¾ Ð²Ð¾Ð·Ð¼Ð¾Ð¶Ð½ÑÑ Ð¿ÑÐ¸ÑÐ¸Ð½Ð°Ñ Ð¾ÑÐ¸Ð±ÐºÐ¸...</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

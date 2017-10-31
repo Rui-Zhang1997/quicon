@@ -15,5 +15,3 @@ def scrape():
 
 def tscrape(url):
     print(tsc.scrape_article(url))
-
-tscrape('http://www.reuters.com/article/us-usa-trump-russia-charges/first-charges-filed-in-u-s-special-counsels-russia-investigation-source-idUSKBN1CX00V')

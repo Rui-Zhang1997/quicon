@@ -104,6 +104,7 @@ def guess_article(text_groups):
     top_devs = dict(list(reversed(sorted(stddev_list, key=lambda n: n[1][1])))[:3])
     top_lengths = dict(list(reversed(sorted([(k, l) for k, l in lengths.items()], key=lambda n: n[1])))[:3])
     common_keys = set(top_means) & set(top_devs) & set(top_lengths)
+    print("COMMON_KEYS", common_keys)
     if len(common_keys) > 0:
         if len(common_keys) == 1:
             div = list(common_keys)[0]
@@ -124,17 +125,23 @@ def guess_article(text_groups):
         if top_lengths[k] > max_:
             max_ = top_lengths[k]
             key = k
+    if not key:
+        print(text_groups)
+        return None, None
     return key, text_groups[key]
 
 def scrape_article(url):
-    r = req.get(url)
+    print(url)
+    r = req.get(url, headers={'User-Agent': 'Polydata'})
     soup = bsoup(r.text, 'html.parser')
     texts = soup.find_all('p')
     text_groups = {}
     for t in texts:
         parent = t.parent
-        while parent and parent.name != 'div' and parent.name != 'body':
+        while parent and parent.name not in {'div', 'body', 'article', 'section'}:
             parent = parent.parent
+        if not parent:
+            parent = t
         parent_id = parent['id'] if parent.has_attr('id') else (parent['class'] if parent.has_attr('class') else parent.name)
         if isinstance(parent_id, list):
             parent_id = ':'.join(parent_id)
