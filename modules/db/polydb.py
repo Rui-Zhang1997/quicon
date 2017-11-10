@@ -35,4 +35,6 @@ def init():
     sql_session = sessionmaker(bind=sql_engine)
 
 def get_session():
+    if not sql_session:
+        init()
     return sql_session()

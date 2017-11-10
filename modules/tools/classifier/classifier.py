@@ -28,8 +28,6 @@ Takes the sources from the database and sorts them in three groups:
 Strictly Conservative: Only used in conservative subreddits
 Strictly Liberal: Only used in liberal subreddits
 Moderate: Appears in both subreddits
-
-
 '''
 from modules.tools.math import commons as cms
 from modules.models import models
@@ -61,5 +59,5 @@ def normalize_for_groups(cons_freq, lib_freq):
     cons_keyset = set(cons_freq)
     libs_keyset = set(lib_freq)
     common_keys = cons_keyset & libs_keyset
-    common_freqs = dict([(k, cons_freq[k] - libs_freq[k]) for k in common_keys])
+    common_freqs = dict([(k, cons_freq[k] - lib_freq[k]) for k in common_keys])
     return normalize_data(cons_freq), normalize_data(lib_freq), normalize_data(common_freqs)
